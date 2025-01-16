@@ -2,35 +2,51 @@
 
 import DottedSeparator from "@/components/dotted-separator";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
-
-const formSchema = z.object({
-  name : z.string().min(1,"Required").trim(),
-  email: z.string().email(),
-  password: z.string().min(8,"Password should be at least 8 characters long."),
-});
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+import { registerSchema } from "../schema";
+import { useRegister } from "../api/useRegister";
+import { useRouter } from "next/navigation";
 
 export const SignUpCard = () => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const { mutate } = useRegister();
+  const router = useRouter();
+  const form = useForm<z.infer<typeof registerSchema>>({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
-      name:"",
+      name: "",
       email: "",
       password: "",
     },
   });
 
-  const onSubmit = (values:z.infer<typeof formSchema>)=>{
-    console.log(values)
-  }
-
+  const onSubmit = (values: z.infer<typeof registerSchema>) => {
+    try {
+      mutate({ json: values });
+      router.push("/sign-in");
+    } catch (error) {
+      console.log(error);
+      router.push("/error");
+    }
+  };
 
   return (
     <Card className="w-full h-full md:w-[480px] border-none shadow-none">
