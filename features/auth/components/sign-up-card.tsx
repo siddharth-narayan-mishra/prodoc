@@ -23,12 +23,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { registerSchema } from "../schema";
-import { useRegister } from "../api/useRegister";
-import { useRouter } from "next/navigation";
+import { useRegister } from "../api/use-register";
 
 export const SignUpCard = () => {
   const { mutate } = useRegister();
-  const router = useRouter();
+
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -39,13 +38,7 @@ export const SignUpCard = () => {
   });
 
   const onSubmit = (values: z.infer<typeof registerSchema>) => {
-    try {
-      mutate({ json: values });
-      router.push("/sign-in");
-    } catch (error) {
-      console.log(error);
-      router.push("/error");
-    }
+    mutate({json:values});
   };
 
   return (

@@ -17,12 +17,10 @@ import {
 } from "@/components/ui/form";
 import Link from "next/link";
 import { loginSchema } from "../schema";
-import { useLogin } from "../api/useLogin";
-import { useRouter } from "next/navigation";
+import { useLogin } from "../api/use-login";
 
 export const SignInCard = () => {
   const { mutate } = useLogin();
-  const router = useRouter()
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -33,13 +31,7 @@ export const SignInCard = () => {
   });
 
   const onSubmit = (values: z.infer<typeof loginSchema>) => {
-    try {
-      mutate({ json: values });
-      router.push("/private");
-    } catch (e) {
-      console.log(e);
-      router.push("/error");
-    }
+    mutate({ json: values });
   };
 
   return (
